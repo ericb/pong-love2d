@@ -1,8 +1,8 @@
-ball=require 'Ball'
+Ball = require 'entity.ball'
 
 function love.load()
-   --image = love.graphics.newImage("cake.jpg")
-   --ball = new Ball()
+
+   ball = Ball()
 
    x = love.graphics.getWidth() / 2
    y = love.graphics.getHeight() - 30
@@ -34,23 +34,13 @@ function drawBall()
 end
 
 function updateBall(dt)
-    bx = bx + (bax * dt)
-    by = by + (bay * dt)
-
-    if(by + 10 >= love.graphics.getHeight()) then
-        bay = -300
-        bax = -300
-    end
-
-    if(by <= 10) then
-        bay = 300
-        bax = 300
-    end
+    
 end
 
 function love.update(dt)
 
-    updateBall(dt)
+    --updateBall(dt)
+    ball.update(dt)
 
     if(love.keyboard.isDown("up")) then
         --y = y - 1
@@ -79,6 +69,5 @@ end
 
 function love.draw()
     drawPaddles()
-    drawBall()
-    --love.graphics.print("Hello World", x, y)
+    ball.draw()
 end
