@@ -1,23 +1,18 @@
-Ball = require 'entity.ball'
+Ball   = require 'entity.ball'
+Paddle = require 'entity.paddle'
 
 function love.load()
 
-   ball = Ball()
+   ball = Ball:init()
 
    x = love.graphics.getWidth() / 2
    y = love.graphics.getHeight() - 30
    x2 = love.graphics.getWidth() / 2
    y2 = 10
 
-   by = love.graphics.getHeight() / 2
-   bx = love.graphics.getWidth() / 2
-
-   bax = 300
-   bay = 300
    
-   local f = love.graphics.newFont(24)
+   local f = love.graphics.newFont(11)
    love.graphics.setFont(f)
-   love.graphics.setColor(0,0,0,255)
    love.graphics.setBackgroundColor(0,0,0) --,255,255)
    --love.graphics.toggleFullscreen()
 end
@@ -28,19 +23,9 @@ function drawPaddles()
     love.graphics.rectangle("fill", x2, y2, 100, 20)
 end
 
-function drawBall()
-    love.graphics.setColor(0,255,255,255)
-    love.graphics.circle("fill", bx, by, 10, 100)
-end
-
-function updateBall(dt)
-    
-end
-
 function love.update(dt)
 
-    --updateBall(dt)
-    ball.update(dt)
+    ball:update(dt)
 
     if(love.keyboard.isDown("up")) then
         --y = y - 1
@@ -69,5 +54,5 @@ end
 
 function love.draw()
     drawPaddles()
-    ball.draw()
+    ball:draw()
 end

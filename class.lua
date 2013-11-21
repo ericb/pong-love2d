@@ -1,51 +1,29 @@
---[[
--- $Id: class.lua 10 2008-07-01 22:18:32Z basique $
--- Simple class implementation
--- Taken from http://lua-users.org/wiki/SimpleLuaClasses
--- Original author unknown
---]]
-
-
-function class(base,ctor)
-  local c = {}     -- a new class instance
-  if not ctor and type(base) == 'function' then
-      ctor = base
-      base = nil
-  elseif type(base) == 'table' then
-   -- our new class is a shallow copy of the base class!
-      for i,v in pairs(base) do
-          c[i] = v
-      end
-      c._base = base
-  end
-  -- the class will be the metatable for all its objects,
-  -- and they will look up their methods in it.
-  c.__index = c
-
-  -- expose a ctor which can be called by <classname>(<args>)
-  local mt = {}
-  mt.__call = function(class_tbl,...)
-    local obj = {}
-    setmetatable(obj,c)
-        if ctor then
-       ctor(obj,...)
-    else
-    -- make sure that any stuff from the base class is initialized!
-       if base and base.init then
-         base.init(obj,...)
-       end
+function class(...)
+  -- "cls" is the new class
+  local cls, bases = {}, {...}
+  -- copy base class contents into the new class
+  for i, base in ipairs(bases) do
+    for k, v in pairs(base) do
+      cls[k] = v
     end
-    return obj
   end
-  c.init = ctor
-  c.is_a = function(self,klass)
-      local m = getmetatable(self)
-      while m do
-         if m == klass then return true end
-         m = m._base
-      end
-      return false
+  -- set the class's __index, and start filling an "is_a" table that contains this class and all of its bases
+  -- so you can do an "instance of" check using my_instance.is_a[MyClass]
+  cls.__index, cls.is_a = cls, {[cls] = true}
+  for i, base in ipairs(bases) do
+    for c in pairs(base.is_a) do
+      cls.is_a[c] = true
     end
-  setmetatable(c,mt)
-  return c
+    cls.is_a[base] = true
+  end
+  -- the class's __call metamethod
+  setmetatable(cls, {__call = function (c, ...)
+    local instance = setmetatable({}, c)
+    -- run the init method if it's there
+    local init = instance._init
+    if init then init(instance, ...) end
+    return instance
+  end})
+  -- return the new class table, that's ready to fill with methods
+  return cls
 end
