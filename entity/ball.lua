@@ -1,6 +1,6 @@
 local Ball = {}
 
-function Ball:init()
+function Ball.init()
     local obj = {}
     obj.x = 0 -- 2D x coordinate
     obj.y = 0 -- 2D y coordinate
@@ -25,6 +25,7 @@ function Ball:init()
     obj.color_a = 255
 
     obj.angle = 0 -- travel angle
+    obj.space = {}
 
     function obj:update(dt)
         
@@ -69,6 +70,11 @@ function Ball:init()
             end
         end
 
+        self.space.top    = self.y - self.radius
+        self.space.bottom = self.y + self.radius
+        self.space.left   = self.x - self.radius
+        self.space.right  = self.x + self.radius
+
         -- calculate the angle it's currently traveling at
         dx = self.x - self.last_x
         dy = self.y - self.last_y
@@ -81,8 +87,10 @@ function Ball:init()
         
         love.graphics.print('angle = ' .. self.angle, 10, 10)
         love.graphics.print(self.ax .. ', ' .. self.ay, 10, 20)
+    end
 
-        --love.graphics.print(self.x, 100, 200)
+    function obj:collision(collider)
+
     end
 
     return obj

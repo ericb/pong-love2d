@@ -1,10 +1,13 @@
 local Paddle = {}
 
-function Paddle:init()
+function Paddle.init(x,y, leftKey, rightKey)
     local obj = {}
 
-    obj.x = 0 -- 2D x coordinate
-    obj.y = 0 -- 2D y coordinate
+    obj.x = x or 0 -- 2D x coordinate
+    obj.y = y or 10 -- 2D y coordinate
+
+    obj.leftKey  = leftKey or "left"
+    obj.rightKey = rightKey or "right"
 
     obj.height = 10
     obj.width  = 100
@@ -20,13 +23,35 @@ function Paddle:init()
     obj.color_b = 255
     obj.color_a = 255
 
-    function Paddle.update(dt)
+    obj.space = {}
 
+    function obj:update(dt)
+        
+        self.space.top    = self.y
+        self.space.bottom = self.y + self.height
+        self.space.left   = self.x
+        self.space.right  = self.x + self.width
+
+        if(love.keyboard.isDown(self.rightKey)) then
+            self.x = self.x + 5
+        end
+
+        if(love.keyboard.isDown(self.leftKey)) then
+            self.x = self.x - 5
+        end
+
+        self.check_collisions()
     end
 
-    function Paddle:draw()
+    function obj:check_collisions()
+    end
 
+    function obj:draw()
+        love.graphics.setColor(255,255,255,255)
+        love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
     end
 
     return obj
 end
+
+return Paddle
