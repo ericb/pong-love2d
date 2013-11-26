@@ -65,6 +65,13 @@ function Ball.init()
     obj.system:start()
 
     function obj:update(dt)
+
+        if(reset_timer <= 0) then
+            self.speed = 285
+        else
+            self.speed = 100
+            reset_timer = reset_timer - dt
+        end
         
         local windowHeight = love.graphics.getHeight()
         local windowWidth  = love.graphics.getWidth()

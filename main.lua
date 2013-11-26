@@ -10,6 +10,8 @@ function love.load()
    last_update = 0
    last_dir    = "left"
 
+   reset_timer = 1
+
    player1_score = 0
    player2_score = 0
 
@@ -28,6 +30,7 @@ function love.load()
    f = love.graphics.newFont(11)
    love.graphics.setFont(f)
    love.graphics.setBackgroundColor(0,0,0) --,255,255)
+    reset()
 end
 
 function love.update(dt)
@@ -62,6 +65,8 @@ function love.update(dt)
 
         
 
+        
+        
         ball:update(dt)
         paddle1:update(dt)
         paddle2:update(dt)
@@ -87,6 +92,7 @@ function love.keypressed(key)
 end
 
 function reset()
+    reset_timer = 1
     ball = Ball:init()
     ball.x = (love.graphics.getWidth() / 2) - (ball.radius)
     ball.y = (love.graphics.getHeight() / 2) - (ball.radius)
