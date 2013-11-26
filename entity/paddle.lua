@@ -56,6 +56,14 @@ function Paddle.init(x,y, leftKey, rightKey, position)
         self:check_collisions()
     end
 
+    function obj:moveRight(dt)
+        self.x = self.x + (self.speed * dt)
+    end
+
+    function obj:moveLeft(dt)
+        self.x = self.x - (self.speed * dt)
+    end
+
     function obj:check_collisions()
         if(self:overlap(self.x,self.y,self.width,self.height, ball.x, ball.y , ball.img:getWidth(), ball.img:getHeight())) then
             ball:collision(self)

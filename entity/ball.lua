@@ -11,7 +11,7 @@ function Ball.init()
     obj.radius    = 6
     obj.segments  = 100
 
-    obj.speed = 300
+    obj.speed = 285
 
     obj.ax = obj.speed -- x coordinate acceleration rate
     obj.ay = obj.speed -- y coodrinate acceleration rate

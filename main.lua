@@ -7,6 +7,9 @@ function love.load()
     love.graphics.setMode(640,400, false, true, 4);
    ball = Ball:init()
 
+   last_update = 0
+   last_dir    = "left"
+
    player1_score = 0
    player2_score = 0
 
@@ -29,10 +32,35 @@ end
 
 function love.update(dt)
 
+    last_update = last_update + dt
     if(gamelost == false and paused == false) then
 
         --invincible ai
-        paddle1.x = (ball.x + (ball.radius / 2)) - (paddle1.width / 2);
+        local mid = (ball.x + (ball.radius / 2)) - (paddle1.width / 2);
+        --math.randomseed(dt)
+        --math.randomseed(ball.x + ball.y)
+        go = math.random(0,1000)
+
+        if(last_update > 0.3) then
+            last_update = 0
+                if(mid < paddle1.x) then
+                    paddle1:moveLeft(dt)
+                    last_dir = "left"
+                else
+                    paddle1:moveRight(dt)
+                    last_dir = "right"
+                end
+        else
+            if(go > 100) then
+                if(last_dir == "left") then
+                    paddle1:moveLeft(dt)
+                else
+                    paddle1:moveRight(dt)
+                end
+            end
+        end
+
+        
 
         ball:update(dt)
         paddle1:update(dt)
@@ -60,16 +88,30 @@ end
 
 function reset()
     ball = Ball:init()
-    ball.x = 20
-    ball.y = 50
+    ball.x = (love.graphics.getWidth() / 2) - (ball.radius)
+    ball.y = (love.graphics.getHeight() / 2) - (ball.radius)
+    math.randomseed(os.time() * last_update)
+    if(math.random(0,50) > 25) then
+        ball.ax = ball.speed
+    else
+        ball.ax = -ball.speed
+    end
+
+    if(math.random(0,50) > 25) then
+        ball.ay = ball.speed
+    else
+        ball.ay = -ball.speed
+    end
+
     paused = false
     gamelost = false
     love.audio.resume(music)
 end
 
 function gameover()
-    love.audio.play(gameoversnd)
-    gamelost = true
+    --love.audio.play(gameoversnd)
+    --gamelost = true
+    reset()
 end
 
 function love.draw()
@@ -79,6 +121,7 @@ function love.draw()
     paddle2:draw()
     
     -- draw scores
+    --love.graphics.print('random = ' .. go, 10, 10)
     love.graphics.setFont(scoreFont);
     love.graphics.print(player1_score, 5,5)
     love.graphics.print(player2_score, love.graphics.getWidth() - (scoreFont:getWidth(player2_score) + 5), love.graphics.getHeight() - (scoreFont:getHeight() + 5))
