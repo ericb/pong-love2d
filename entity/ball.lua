@@ -27,7 +27,7 @@ function Ball.init()
     obj.angle = 0 -- travel angle
     obj.space = {}
 
-    obj.snd = love.audio.newSource("snd/collision.wav", "static")
+    obj.snd  = love.audio.newSource("snd/collision.wav", "static")
     obj.img  = love.graphics.newImage("img/glow.png")
     obj.pong = love.graphics.newImage("img/ball.png")
 
@@ -77,10 +77,12 @@ function Ball.init()
 
         if(self.y > windowHeight) then
             gameover()
+            player1_score = player1_score + 1
         end
 
         if(self.y < 0) then
             gameover()
+            player2_score = player2_score + 1
         end
 
         if(self.x > windowWidth) then

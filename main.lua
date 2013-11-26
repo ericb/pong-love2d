@@ -7,23 +7,27 @@ function love.load()
     love.graphics.setMode(640,400, false, true, 4);
    ball = Ball:init()
 
+   player1_score = 0
+   player2_score = 0
+
    background = love.graphics.newImage("img/background.png")
 
+   scoreFont = love.graphics.newFont("font/enhanced_dot_digital-7.ttf", 30)
+   largeFont = love.graphics.newFont("font/Gothik Steel.ttf", 54)
+   music = love.audio.newSource("snd/music.wav")
+   music:setLooping(true)
+   love.audio.play(music)
    gameoversnd = love.audio.newSource("snd/game_over.wav", "static")
 
    paddle1 = Paddle.init(love.graphics.getWidth() / 2, 10, "a", "d", "top")
    paddle2 = Paddle.init(love.graphics.getWidth() / 2, love.graphics.getHeight() - 20)
    
-   local f = love.graphics.newFont(11)
+   f = love.graphics.newFont(11)
    love.graphics.setFont(f)
    love.graphics.setBackgroundColor(0,0,0) --,255,255)
 end
 
 function love.update(dt)
-    if(gamelost) then
-        love.graphics.setColor(255,255,255,255)
-        love.graphics.print('GAME OVER', 10, 10)
-    end
 
     if(gamelost == false and paused == false) then
 
@@ -42,12 +46,25 @@ function love.keypressed(key)
    end
 
     if key == " " then
-        if(paused) then
+        if(gamelost) then
+            reset()
+        elseif(paused) then
             paused = false
+            love.audio.resume(music)
         else
             paused = true
+            love.audio.pause(music)
         end
     end
+end
+
+function reset()
+    ball = Ball:init()
+    ball.x = 20
+    ball.y = 50
+    paused = false
+    gamelost = false
+    love.audio.resume(music)
 end
 
 function gameover()
@@ -61,4 +78,21 @@ function love.draw()
     paddle1:draw()
     paddle2:draw()
     
+    -- draw scores
+    love.graphics.setFont(scoreFont);
+    love.graphics.print(player1_score, 5,5)
+    love.graphics.print(player2_score, love.graphics.getWidth() - (scoreFont:getWidth(player2_score) + 5), love.graphics.getHeight() - (scoreFont:getHeight() + 5))
+    
+    if(paused) then
+        love.graphics.setFont(largeFont);
+        love.graphics.print("PAUSED", (love.graphics.getWidth() / 2) - (largeFont:getWidth("PAUSED") / 2), (love.graphics.getHeight() / 2) - (largeFont:getHeight() / 2))
+        love.graphics.setFont(f);
+    end
+
+    if(gamelost) then
+        love.audio.pause(music)
+        love.graphics.setFont(largeFont);
+        love.graphics.print("GAME OVER", (love.graphics.getWidth() / 2) - (largeFont:getWidth("GAME OVER") / 2), (love.graphics.getHeight() / 2) - (largeFont:getHeight() / 2))
+        love.graphics.setFont(f);
+    end
 end
