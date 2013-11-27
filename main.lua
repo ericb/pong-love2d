@@ -7,6 +7,9 @@ function love.load()
     love.graphics.setMode(640,400, false, true, 4);
    ball = Ball:init()
 
+   modes = love.graphics.getModes()
+   table.sort(modes, function(a, b) return a.width*a.height < b.width*b.height end)   -- sort from smallest to largest
+
    last_update = 0
    last_dir    = "left"
 
@@ -21,6 +24,7 @@ function love.load()
    largeFont = love.graphics.newFont("font/Gothik Steel.ttf", 54)
    music = love.audio.newSource("snd/music.wav")
    music:setLooping(true)
+   music:setVolume(0.5)
    love.audio.play(music)
    gameoversnd = love.audio.newSource("snd/game_over.wav", "static")
    pointsnd = love.audio.newSource("snd/point.wav", "static")
