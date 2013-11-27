@@ -23,6 +23,8 @@ function love.load()
    music:setLooping(true)
    love.audio.play(music)
    gameoversnd = love.audio.newSource("snd/game_over.wav", "static")
+   pointsnd = love.audio.newSource("snd/point.wav", "static")
+   lostpointsnd = love.audio.newSource("snd/lost_point.wav", "static")
 
    paddle1 = Paddle.init(love.graphics.getWidth() / 2, 10, "a", "d", "top")
    paddle2 = Paddle.init(love.graphics.getWidth() / 2, love.graphics.getHeight() - 20)
@@ -62,11 +64,7 @@ function love.update(dt)
                 end
             end
         end
-
-        
-
-        
-        
+         
         ball:update(dt)
         paddle1:update(dt)
         paddle2:update(dt)
@@ -96,7 +94,10 @@ function reset()
     ball = Ball:init()
     ball.x = (love.graphics.getWidth() / 2) - (ball.radius)
     ball.y = (love.graphics.getHeight() / 2) - (ball.radius)
+    ball.speed = 100
     math.randomseed(os.time() * last_update)
+
+    ball.x = love.graphics.getWidth() * (math.random(0,100) / 100)
     if(math.random(0,50) > 25) then
         ball.ax = ball.speed
     else
@@ -105,8 +106,10 @@ function reset()
 
     if(math.random(0,50) > 25) then
         ball.ay = ball.speed
+        ball.y  = 30
     else
         ball.ay = -ball.speed
+        ball.y  = love.graphics.getHeight() - 30
     end
 
     paused = false
@@ -125,7 +128,17 @@ function love.draw()
     ball:draw()
     paddle1:draw()
     paddle2:draw()
-    
+
+    -- draw fades
+    if(reset_timer > 0) then
+        local scale = 0.5
+        love.graphics.setColor(255, 255, 255, math.floor(255 - (255 * reset_timer)))
+        love.graphics.setFont(scoreFont);
+        love.graphics.print("NEW BALL", (love.graphics.getWidth() / 2) - ((scoreFont:getWidth("NEW BALL") * scale) / 2), (love.graphics.getHeight() / 2) - ((scoreFont:getHeight() * scale) / 2), 0, scale, scale)
+        love.graphics.setFont(f);
+        love.graphics.setColor(255,255,255,255)
+    end
+
     -- draw scores
     --love.graphics.print('random = ' .. go, 10, 10)
     love.graphics.setFont(scoreFont);

@@ -69,8 +69,20 @@ function Ball.init()
         if(reset_timer <= 0) then
             self.speed = 285
         else
-            self.speed = 100
+            self.speed = self.speed + (self.speed * dt)
             reset_timer = reset_timer - dt
+        end
+
+        if(self.ax > 0) then
+            self.ax = self.speed
+        else
+            self.ax = -self.speed
+        end
+
+        if(self.ay > 0) then
+            self.ay = self.speed
+        else
+            self.ay = -self.speed
         end
         
         local windowHeight = love.graphics.getHeight()
@@ -85,11 +97,15 @@ function Ball.init()
         if(self.y > windowHeight) then
             gameover()
             player1_score = player1_score + 1
+            love.audio.rewind(lostpointsnd)
+            love.audio.play(lostpointsnd)
         end
 
         if(self.y < 0) then
             gameover()
             player2_score = player2_score + 1
+            love.audio.rewind(pointsnd)
+            love.audio.play(pointsnd)
         end
 
         if(self.x > windowWidth) then
